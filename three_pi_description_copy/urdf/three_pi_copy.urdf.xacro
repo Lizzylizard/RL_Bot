@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<robot name="three_pi" xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <xacro:include filename="$(find three_pi_description_copy)/urdf/wheels_three_pi_copy.xacro" />
+    <xacro:include filename="$(find three_pi_description_copy)/urdf/sensors_three_pi_copy.xacro" />
+    <xacro:include filename="$(find three_pi_description_copy)/urdf/plugins_three_pi_copy.xacro" />
+
+    <!-- base link -->
+    <link name="base_link" />
+
+    <!-- chassis link -->
+    <link name="chassis_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0" />
+            <mass value="8.0" />
+            <inertia ixx="0.014637420416" ixy="0.0" ixz="0.0" iyy="0.021980346124" iyz="0.0" izz="0.036084431721" />
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.04" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://three_pi_description_copy/media/meshes/chassis/model.dae" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.04" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://three_pi_description_copy/media/meshes/chassis/model.dae" />
+            </geometry>
+        </collision>
+
+        <!-- caster back -->
+        <visual>
+            <origin xyz="-0.08 0.0 0.025" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="-0.08 0.0 0.025" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>0</mu>
+                        <mu2>0</mu2>
+                        <slip1>1.0</slip1>
+                        <slip2>1.0</slip2>
+                    </ode>
+                </friction>
+            </surface>
+        </collision>
+    </link>
+
+    <joint name="chassis_to_base_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="chassis_link" />
+        <origin xyz="0 0 0.02" rpy="0 0 0" />
+    </joint>
+
+    <!-- wheels -->
+    <xacro:wheel side="left" reflect="1" />
+    <xacro:wheel side="right" reflect="-1" />
+</robot>

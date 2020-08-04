@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<robot name="three_pi_wheel" xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <xacro:macro name="wheel" params="side reflect">
+        <link name="${side}_wheel_link">
+            <inertial>
+                <origin xyz="-0.00097124 0.0 -0.0" rpy="0.0 0.0 0.0" />
+                <mass value="1.0" />
+                <inertia ixx="0.00032551617371" ixy="0.0" ixz="0.0" iyy="0.00076656293161" iyz="0.0" izz="0.00044492054604" />
+            </inertial>
+            <visual>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+                <geometry>
+                    <mesh filename="package://three_pi_description_copy/media/meshes/wheel/model.dae" />
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+                <geometry>
+                    <mesh filename="package://three_pi_description_copy/media/meshes/wheel/model.dae" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${side}_wheel_to_chassis_joint" type="continuous">
+            <origin xyz="0.0 ${-0.084*reflect} 0.05" rpy="0.0 0.0 0.0" />
+            <parent link="chassis_link" />
+            <child link="${side}_wheel_link" />
+            <axis xyz="0.0 1.0 0.0" />
+            <limit effort="10000" velocity="1000" />
+            <joint_properties damping="1.0" friction="1.0" />
+        </joint>
+
+        <gazebo reference="${side}_wheel_to_chassis_joint">
+            <mu1 value="200.0" />
+            <mu2 value="100.0" />
+            <kp value="10000000.0" />
+            <kd value="1.0" />
+        </gazebo>
+    </xacro:macro>
+</robot>

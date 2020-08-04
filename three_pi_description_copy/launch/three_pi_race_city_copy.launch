@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <launch>
-    <arg name="model" default="$(find three_pi_description)/urdf/three_pi.urdf.xacro" />
-    <arg name="rvizconfig" default="$(find three_pi_description)/rviz/urdf.rviz" />
+    <arg name="model" default="$(find three_pi_description_copy)/urdf/three_pi_copy.urdf.xacro" />
+    <arg name="rvizconfig" default="$(find three_pi_description_copy)/rviz/urdf.rviz" />
     <arg name="x_pos" default="-3.4" />
     <arg name="y_pos" default="-6.225" />
-    <arg name="z_pos" default="0.0" />
+    <arg name="z_pos" default="0.0" />	
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
         <arg name="world_name" value="$(find race_city)/worlds/race_city.world" />
