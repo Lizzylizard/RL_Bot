@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<robot name="three_pi_sensors" xmlns:xacro="https://www.ros.org/wiki/xacro">
+
+    <!-- camera link 1 (original) -->	
+    <link name="camera_link">
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="camera_joint" type="fixed"> 
+        <!-- <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/2} 0.0" /> -->
+        <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/4} 0.0" />
+        <!-- <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/7} 0.0" /> -->
+		<parent link="chassis_link" />
+        <child link="camera_link" />
+    </joint> 
+	
+	<!-- camera link 2 (left) -->
+	<link name="camera_link_2">
+	<collision>
+		<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+		<geometry>
+			<box size="0.01 0.01 0.01" />
+		</geometry>
+	</collision>
+    </link>
+    <joint name="camera_joint_2" type="fixed">
+        <!-- <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/2} 0.0" /> -->
+        <origin xyz="0.08 0.1 0.15" rpy="0.0 ${pi/4} 0.0" />
+        <!-- <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/7} 0.0" /> -->
+        <parent link="chassis_link" />
+        <child link="camera_link_2" />
+    </joint>
+	
+	<!-- camera link 3 (right) -->
+	<link name="camera_link_3">
+	<collision>
+		<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+		<geometry>
+			<box size="0.01 0.01 0.01" />
+		</geometry>
+	</collision>
+    </link>
+    <joint name="camera_joint_3" type="fixed">
+        <!-- <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/2} 0.0" /> -->
+        <origin xyz="0.08 -0.1 0.15" rpy="0.0 ${pi/4} 0.0" />
+        <!-- <origin xyz="0.08 0.0 0.15" rpy="0.0 ${pi/7} 0.0" /> -->
+        <parent link="chassis_link" />
+        <child link="camera_link_3" />
+    </joint>
+	
+	<!-- sonar sensor -->
+	<joint name="sonar_front_joint" type="fixed">
+		<axis xyz="0 1 0" />
+		<origin rpy="0 0 0" xyz="0.5 0 0.25" />
+		<parent link="chassis_link"/>
+		<child link="base_sonar_front"/>
+	</joint>
+	<link name="base_sonar_front">
+		<collision>
+		  <origin xyz="0 0 0" rpy="0 0 0"/>
+		  <geometry>
+			<box size="0.01 0.01 0.01"/>
+		  </geometry>
+		</collision>    
+		<visual>
+		  <origin xyz="0 0 0" rpy="0 0 0"/>
+		  <geometry>
+			<box size="0.01 0.01 0.01"/>
+		  </geometry>
+		</visual>    
+		<inertial>
+		  <mass value="1e-5" />
+		  <origin xyz="0 0 0" rpy="0 0 0"/>
+		  <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+		</inertial>
+	</link>
+
+    <!-- lidar link -->
+    <link name="lidar_link">
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="lidar_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.09" rpy="0.0 0.0 0.0" />
+        <parent link="chassis_link" />
+        <child link="lidar_link" />
+    </joint>
+
+    <!-- imu link -->
+    <link name="imu_link" />
+
+    <joint name="imu_joint" type="fixed">
+        <parent link="chassis_link" />
+        <child link="imu_link" />
+        <origin xyz="0.0 0 0.05" rpy="0 0 0" />
+    </joint>
+</robot>

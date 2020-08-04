@@ -1,0 +1,8 @@
+prefix=/home/elisabeth/catkin_ws/src/ROS_Packages/plugins/vel_joint_motors/build/devel
+
+Name: vel_joint_motors
+Description: Description of vel_joint_motors
+Version: 0.0.0
+Cflags: -I/home/elisabeth/catkin_ws/src/ROS_Packages/plugins/vel_joint_motors/build/devel/include
+Libs: -L${prefix}/lib 
+Requires: my_msgs roscpp gazebo_ros message_runtime geometry_msgs

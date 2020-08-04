@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/elisabeth/catkin_ws/src/ROS_Packages/my_msgs/build/devel/setup.sh

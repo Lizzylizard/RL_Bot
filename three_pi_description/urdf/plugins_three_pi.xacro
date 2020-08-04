@@ -1,0 +1,263 @@
+<?xml version="1.0" ?>
+<robot name="three_pi_plugins" xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <xacro:arg name="camera_visual" default="false" />
+    <xacro:arg name="laser_visual" default="false" />
+    <xacro:arg name="imu_visual" default="false" />
+
+    <!-- camera plugin 1 (original) -->
+    <gazebo reference="camera_link">
+        <sensor type="camera" name="3Pi Camera">
+            <always_on>true</always_on>		
+            <visualize>$(arg camera_visual)</visualize>
+            <camera>
+                <horizontal_fov>1.085595</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+				<!---<image>
+                    <width>50</width>
+                    <height>1</height>
+                    <format>L8</format>
+                </image> -->
+                <clip>
+                    <near>0.1</near>
+                    <far>1.0</far>
+                </clip>
+				<!--<save enabled="true">
+					<path>/home/elisabeth/Dokumente/GazeboImages/v3</path>
+				</save>-->
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate> <!-- 30 -->
+                <cameraName>camera</cameraName>
+                <frameName>camera_rgb_optical_frame</frameName>
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>  
+            </plugin>
+        </sensor>
+    </gazebo>
+
+	
+    <!-- camera plugin 2 (left)-->
+    <gazebo reference="camera_link_2">
+        <sensor type="camera" name="3Pi Camera">
+            <always_on>true</always_on>		
+            <visualize>$(arg camera_visual)</visualize>
+            <camera>
+                <horizontal_fov>1.085595</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+				<!---<image>
+                    <width>50</width>
+                    <height>1</height>
+                    <format>L8</format>
+                </image> -->
+                <clip>
+                    <near>0.1</near>
+                    <far>1.0</far>
+                </clip>
+				<!--<save enabled="true">
+					<path>/home/elisabeth/Dokumente/GazeboImages/v3</path>
+				</save>-->
+            </camera>
+            <plugin name="camera_controller_2" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate> <!-- 30 -->
+                <cameraName>camera_2</cameraName>
+                <frameName>camera_rgb_optical_frame_2</frameName>
+                <imageTopicName>image_raw_2</imageTopicName>
+                <cameraInfoTopicName>rgb/camera_info_2</cameraInfoTopicName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>  
+            </plugin>
+        </sensor>
+    </gazebo>
+	
+    <!-- camera plugin 3 (right)-->
+    <gazebo reference="camera_link_3">
+        <sensor type="camera" name="3Pi Camera">
+            <always_on>true</always_on>		
+            <visualize>$(arg camera_visual)</visualize>
+            <camera>
+                <horizontal_fov>1.085595</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+				<!---<image>
+                    <width>50</width>
+                    <height>1</height>
+                    <format>L8</format>
+                </image> -->
+                <clip>
+                    <near>0.1</near>
+                    <far>1.0</far>
+                </clip>
+				<!--<save enabled="true">
+					<path>/home/elisabeth/Dokumente/GazeboImages/v3</path>
+				</save>-->
+            </camera>
+            <plugin name="camera_controller_3" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate> <!-- 30 -->
+                <cameraName>camera_3</cameraName>
+                <frameName>camera_rgb_optical_frame_3</frameName>
+                <imageTopicName>image_raw_3</imageTopicName>
+                <cameraInfoTopicName>rgb/camera_info_3</cameraInfoTopicName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>  
+            </plugin>
+        </sensor>
+    </gazebo>
+	
+	<!-- sonar sensor plugin -->
+	<gazebo reference="base_sonar_front">        
+	   <sensor type="ray" name="TeraRanger">
+		  <pose>0 0 0 0 0 0</pose>
+		  <visualize>true</visualize>
+		  <update_rate>50</update_rate>
+		  <ray>
+			 <scan>
+				<horizontal>
+				   <samples>10</samples>
+				   <resolution>1</resolution> 
+				   <min_angle>-0.14835</min_angle>
+				   <max_angle>0.14835</max_angle>
+				</horizontal>
+				<vertical>
+				   <samples>10</samples>
+				   <resolution>1</resolution> 
+				   <min_angle>-0.14835</min_angle>
+				   <max_angle>0.14835</max_angle> 
+				</vertical>
+			 </scan>
+			 <range>
+				<min>0.01</min>
+				<max>10</max>
+				<resolution>0.02</resolution>
+			 </range>
+		  </ray>
+		  <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+			 <gaussianNoise>0.005</gaussianNoise>
+			 <alwaysOn>true</alwaysOn>
+			 <updateRate>30</updateRate>
+			 <topicName>sensor/sonar_front</topicName>
+			 <frameName>base_sonar_front</frameName>
+			 <radiation>ultrasound</radiation>
+			 <fov>0.2967</fov>
+		  </plugin>
+	   </sensor>  
+   </gazebo>
+
+    <!-- lidar plugin -->
+    <gazebo reference="lidar_link">
+        <sensor type="ray" name="lds_lfcd_sensor">
+            <visualize>$(arg laser_visual)</visualize>
+            <update_rate>5</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>360</samples>
+                        <resolution>1</resolution>
+                        <min_angle>0.0</min_angle>
+                        <max_angle>6.28319</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.120</min>
+                    <max>3.5</max>
+                    <resolution>0.015</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+            <plugin name="gazebo_ros_lds_lfcd_controller" filename="libgazebo_ros_laser.so">
+                <topicName>scan</topicName>
+                <frameName>lidar_link</frameName>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <!-- imu plugin -->
+    <gazebo reference="imu_link">
+        <sensor type="imu" name="imu">
+            <always_on>true</always_on>
+            <visualize>$(arg imu_visual)</visualize>
+        </sensor>
+    </gazebo>
+    <gazebo>
+        <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+            <alwaysOn>true</alwaysOn>
+            <bodyName>imu_link</bodyName>
+            <frameName>imu_link</frameName>
+            <topicName>imu</topicName>
+            <serviceName>imu_service</serviceName>
+            <gaussianNoise>0.0</gaussianNoise>
+            <updateRate>200</updateRate>
+            <imu>
+                <noise>
+                    <type>gaussian</type>
+                    <rate>
+                        <mean>0.0</mean>
+                        <stddev>2e-4</stddev>
+                        <bias_mean>0.0000075</bias_mean>
+                        <bias_stddev>0.0000008</bias_stddev>
+                    </rate>
+                    <accel>
+                        <mean>0.0</mean>
+                        <stddev>1.7e-2</stddev>
+                        <bias_mean>0.1</bias_mean>
+                        <bias_stddev>0.001</bias_stddev>
+                    </accel>
+                </noise>
+            </imu>
+        </plugin>
+    </gazebo>
+
+    <!-- odom plugin -->
+    <gazebo>
+        <plugin name="p3d_base_conrtoller" filename="libgazebo_ros_p3d.so">
+            <alwaysOn>True</alwaysOn>
+            <updateRate>50.0</updateRate>
+            <bodyName>base_link</bodyName>
+            <topicName>odom</topicName>
+            <gaussianNoise>0.01</gaussianNoise>
+            <frame>world</frame>
+            <xyzOffsets>0 0 0</xyzOffsets>
+            <rpyOffsets>0 0 0 </rpyOffsets>
+        </plugin>
+    </gazebo>
+
+    <!-- joint motor plugin -->
+    <gazebo>
+        <plugin name="vel_joint_motors_plugin" filename="libvel_joint_motors_plugin.so">
+            <wheelTorque>6.0</wheelTorque>
+            <leftJoint>left_wheel_to_chassis_joint</leftJoint>
+            <rightJoint>right_wheel_to_chassis_joint</rightJoint>
+        </plugin>
+    </gazebo>
+</robot>

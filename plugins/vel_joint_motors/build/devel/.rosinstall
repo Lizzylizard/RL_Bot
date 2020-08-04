@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/elisabeth/catkin_ws/src/ROS_Packages/plugins/vel_joint_motors/build/devel/setup.sh

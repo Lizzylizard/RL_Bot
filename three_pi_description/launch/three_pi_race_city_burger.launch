@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<launch>
+    <!-- pololu -->
+    <arg name="model" default="$(find three_pi_description)/urdf/three_pi.urdf.xacro" />
+    <arg name="rvizconfig" default="$(find three_pi_description)/rviz/urdf.rviz" />
+    <arg name="x_pos" default="-0.5" />
+    <arg name="y_pos" default="-5.22" />
+    <arg name="z_pos" default="0.0" />
+
+    <!-- turtulebot3 -->
+    <arg name="model_" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]" />
+    <arg name="x_pos_" default="-0.5" />
+    <arg name="y_pos_" default="-4.925" />
+    <arg name="z_pos_" default="0.0" />
+
+
+    <!-- gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find race_city)/worlds/race_city.world" />
+        <arg name="debug" value="false" />
+        <arg name="gui" value="true" />
+        <arg name="paused" value="false" />
+        <arg name="use_sim_time" value="true" />
+        <arg name="headless" value="false" />
+    </include>
+
+    <!-- pololu -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_model" args="-urdf -model three_pi -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+
+    <!-- turtlrbot3 -->
+    <param name="robot_description_" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model_).urdf.xacro" />
+
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_" args="-urdf -model turtlebot3_$(arg model_) -x $(arg x_pos_) -y $(arg y_pos_) -z $(arg z_pos_) -param robot_description_" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="30.0" />
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+</launch>

@@ -1,0 +1,87 @@
+<sdf version="1.6">
+    <world name="default">
+        <gui fullscreen="0">
+            <camera name="user_camera">
+                <pose frame="">-1.6716 -6.77912 0.774492 0 0.215643 0.87619</pose>
+                <view_controller>orbit</view_controller>
+                <projection_type>perspective</projection_type>
+            </camera>
+        </gui>
+
+        <!-- A ground plane -->
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+
+        <gravity>0 0 -9.8</gravity>
+        <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+        <atmosphere type="adiabatic" />
+
+        <physics name="default_physics" default="0" type="ode">
+            <max_step_size>0.001</max_step_size>
+            <real_time_factor>1</real_time_factor>
+            <real_time_update_rate>1000</real_time_update_rate>
+        </physics>
+
+        <scene>
+            <ambient>0.4 0.4 0.4 1</ambient>
+            <background>0.7 0.7 0.7 1</background>
+            <shadows>1</shadows>
+        </scene>
+
+        <light name="sun" type="directional">
+            <cast_shadows>1</cast_shadows>
+            <pose frame="">0 0 10 0 -0 0</pose>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <attenuation>
+                <range>1000</range>
+                <constant>0.9</constant>
+                <linear>0.01</linear>
+                <quadratic>0.001</quadratic>
+            </attenuation>
+            <direction>-0.5 0.5 -1</direction>
+        </light>
+
+        <spherical_coordinates>
+            <surface_model>EARTH_WGS84</surface_model>
+            <latitude_deg>0</latitude_deg>
+            <longitude_deg>0</longitude_deg>
+            <elevation>0</elevation>
+            <heading_deg>0</heading_deg>
+        </spherical_coordinates>
+
+        <!-- <include>
+            <uri>model://structure</uri>
+            <name>structure</name>
+            <pose frame="">-0.557914 1.16049 -0.045 0 -0 0</pose>
+        </include> -->
+
+        <include>
+            <uri>model://stonewall</uri>
+            <name>stonewall</name>
+            <pose frame="">-0.034148 -0.218558 -0.0 0 -0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://race_track</uri>
+            <name>race_track</name>
+            <pose frame="">-9.0 -8.5 0.0 0 -0 0</pose>
+        </include>
+
+        <light type="point" name="under">
+            <pose>0 0 -1 0 0 0</pose>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <attenuation>
+                <range>0</range>
+                <linear>0</linear>
+                <constant>0</constant>
+                <quadratic>0</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+    </world>
+
+</sdf>

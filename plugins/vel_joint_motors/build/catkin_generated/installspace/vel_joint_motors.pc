@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: vel_joint_motors
+Description: Description of vel_joint_motors
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: my_msgs roscpp gazebo_ros message_runtime geometry_msgs

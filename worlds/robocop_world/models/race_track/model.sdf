@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="track_making">
+    <link name="race_track">
+      <!-- ground -->
+      <visual name="ground">
+        <pose>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>20 20 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/DarkGrey</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="ground">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>20 20 0.01</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <bounce />
+          <friction>
+            <ode />
+          </friction>
+          <contact>
+            <ode />
+          </contact>
+        </surface>
+      </collision>
+
+      <!-- Track -->
+      <visual name="track">
+        <pose>1.2 -4.8 0.02 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://race_track/meshes/model.dae</uri>
+            <scale>0.078 0.09 0.01</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="track">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://race_track/meshes/model.dae</uri>
+            <scale>0.078 0.09 0.01</scale>
+          </mesh>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <bounce />
+          <friction>
+            <ode />
+          </friction>
+          <contact>
+            <ode />
+          </contact>
+        </surface>
+      </collision>
+    </link>
+    <static>1</static>
+  </model>
+</sdf>
