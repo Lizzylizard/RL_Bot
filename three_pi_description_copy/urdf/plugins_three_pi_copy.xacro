@@ -46,7 +46,6 @@
         </sensor>
     </gazebo>
 
-	
     <!-- camera plugin 2 (left)-->
     <gazebo reference="camera_link_2">
         <sensor type="camera" name="3Pi Camera">
@@ -146,15 +145,15 @@
 				   <max_angle>0.14835</max_angle>
 				</horizontal>
 				<vertical>
-				   <samples>10</samples>
+				   <samples>1</samples>
 				   <resolution>1</resolution> 
-				   <min_angle>-0.14835</min_angle>
-				   <max_angle>0.14835</max_angle> 
+				   <min_angle>-0.04835</min_angle>
+				   <max_angle>0.04835</max_angle> 
 				</vertical>
 			 </scan>
 			 <range>
 				<min>0.01</min>
-				<max>10</max>
+				<max>1</max>
 				<resolution>0.02</resolution>
 			 </range>
 		  </ray>
