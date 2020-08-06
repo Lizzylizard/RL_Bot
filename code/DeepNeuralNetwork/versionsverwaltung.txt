@@ -1,0 +1,9 @@
+Versionsverwaltung DQNs
+/DeepNeuralNetwork
+	dqn_keras_3_1:
+		- Endversion des Praktikums (wie dqn_keras_3, mit ein
+		paar kleinen Anpassungen von Hyperparametern)
+	dqn_keras_3_2:
+		- Als Input Stati statt Bilder
+		- exploration prob wird nicht verändert 
+		- loss ist unglaublich hoch
