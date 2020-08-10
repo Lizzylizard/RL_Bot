@@ -19,6 +19,10 @@ import tensorflow as tf
 import cv2 as cv
 from cv_bridge import CvBridge, CvBridgeError
 
+# Matplotlib
+from matplotlib import pyplot as plt
+from matplotlib.colors import hsv_to_rgb
+
 # ROS
 import rospy
 import rospkg
@@ -41,14 +45,14 @@ class Node:
     # increment if you wish to save a new version of the network model
     # or set to specific model version if you wish to use an existing
     # model
-    self.path_nr = 1
+    self.path_nr = 2
     # set to False if you wish to run program with existing model
     self.learn = True
 
     '''---------------------Hyperparameters------------------------'''
     # hyperparameters to experiment with
     # number of learning episodes
-    self.max_episodes = 400
+    self.max_episodes = 1000
     self.max_steps_per_episode = 750
     # speed of the robot's wheels
     self.speed = 9.0
@@ -94,9 +98,9 @@ class Node:
     self.step_counter = 0  # counts every while iteration
     self.steps_in_episode = 0  # counts steps inside current episode
     # variables deciding whether to explore or to exploit
-    # old
+    # old --> these are currently used
     # self.exploration_prob = 0.99
-    self.exploration_prob = 0.5
+    self.exploration_prob = 0.8
     self.decay_rate = 0.01
     self.min_exploration_rate = 0.01
     self.max_exploration_rate = 1
@@ -197,6 +201,7 @@ class Node:
     self.image_stack[index] = self.my_img
 
     print("Image number " + str(self.img_cnt))
+    print("Image index " + str(index))
     self.img_cnt += 1
 
   # receive ONE new image
@@ -205,8 +210,18 @@ class Node:
     nr_images = self.img_cnt
     while (self.img_cnt <= nr_images):
       pass
+    # save current image
+    ret = self.my_img
+
+    '''
+    #plot image
+    plt.imshow(ret)
+    plt.title("Original")
+    plt.show()
+    '''
+
     # return current image
-    return self.my_img
+    return ret
 
   # receive multiple images
   def get_multiple_images(self):
@@ -228,6 +243,18 @@ class Node:
     my_img = np.zeros(shape=[1, 50])
     my_img[0] = my_imgs[:, (
       self.mini_batch_size-1)*50:self.mini_batch_size*50]
+
+    '''
+    # plot image
+    plt.imshow(my_img)
+    plt.title("Single image")
+    plt.show()
+    plt.imshow(my_imgs[:, (
+      self.mini_batch_size-1)*50:self.mini_batch_size*50]) 
+    plt.title("Last of multiple images")
+    plt.show()
+    '''
+
     return my_imgs, my_img
 
   '''-----------------------Driving methods------------------------'''
@@ -354,10 +381,19 @@ class Node:
 
   # choose one of five given positions randomly
   def select_starting_pos(self):
-    # straight line from far left going into right curve
-    self.x_position = 0.5132014349
-    self.y_position = 4.56540826549
-    self.z_position = -0.0298790967155
+    # choose random number between 0 and 1
+    rand = random.uniform(0, 1)
+    if(rand < 0.5):
+      # sharp left curve
+      self.x_position = 0.930205421421
+      self.y_position = -5.77364575559
+      self.z_position = -0.0301045554742
+    else:
+      # sharp right curve
+      self.x_position = 1.1291257432
+      self.y_position = -3.37940826549
+      self.z_position = -0.0298815752691
+
     '''
     # choose random number between 0 and 1
     rand = random.uniform(0, 1)
@@ -386,12 +422,17 @@ class Node:
       self.y_position = -3.37940826549
       self.z_position = -0.0298815752691
       #print("case 3")
-    else:
+    elif:
       # straight line going into right curve
       self.x_position = 2.4132014349
       self.y_position = 4.56540826549
       self.z_position = -0.0298790967155
       #print("case 4")
+    else: 
+      # straight line from far left going into right curve
+      self.x_position = 3
+      self.y_position = 4.56540826549
+      self.z_position = -0.0298790967155
       '''
 
   '''
@@ -507,20 +548,14 @@ class Node:
     self.last_state = self.curr_state
     print("Last state: " + str(self.state_strings.get(self.last_state)))
     # get new / current state
-    self.curr_state = self.bot.get_state(my_img)
+    # self.curr_state = self.bot.get_state(my_img)
+    self.curr_state = self.imgHelper.get_line_state(my_img)
     print("Current state: " + str(self.state_strings.get(
       self.curr_state)))
 
-    # stop robot immediatley if state is 'line lost', but still
-    # do calculations afterwards (do not reset right away)
-    # stop_arr=[1, 6, self.lost_line]
-    stop_arr=[self.lost_line]
-    #if (self.curr_state == self.lost_line):
-    if(self.curr_state in stop_arr):
-      self.stopRobot()
-
     # calculate reward
-    reward = self.bot.calculate_reward(self.curr_state)
+    reward = self.bot.calculate_reward(self.last_state,
+                                       self.curr_action)
     print("Reward: " + str(reward))
 
     return self.curr_state, reward
@@ -644,7 +679,12 @@ class Node:
     # wait for new image(s)
     my_imgs, my_img = self.shape_images()
     # get new / current state
-    self.curr_state = self.bot.get_state(my_img)
+    self.curr_state, reward = self.get_robot_state(my_img)
+
+    # stop robot
+    stop_arr=[self.lost_line]
+    if(self.curr_state in stop_arr):
+      self.stopRobot()
 
     # get q-values by feeding images to the DQN
     # without updating its weights
@@ -674,7 +714,11 @@ class Node:
     # wait for new image(s)
     my_imgs, my_img = self.shape_images()
     # get new / current state
-    self.curr_state = self.bot.get_state(my_img)
+    self.curr_state, reward = self.get_robot_state(my_img)
+    # stop robot
+    stop_arr=[self.lost_line]
+    if(self.curr_state in stop_arr):
+      self.stopRobot()
 
     # get q-values by feeding images to the DQN
     # without updating its weights
@@ -713,14 +757,15 @@ class Node:
             # get and execute the next action
             self.curr_action = self.get_next_action(my_imgs)
 
-            # observe next state and reward
+            # get next image(s)
             my_imgs, my_img = self.shape_images()
 
-            # get state and reward
+            # observe next state and reward
             self.curr_state, reward = self.get_robot_state(my_img)
             done = False
             if(self.curr_state == self.lost_line):
               done = True
+              self.stopRobot()
 
             # store experience
             self.memory.store_experience(state=my_imgs,

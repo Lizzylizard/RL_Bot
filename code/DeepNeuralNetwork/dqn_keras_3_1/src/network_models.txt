@@ -29,27 +29,27 @@ Network models
 		self.y_position = 4.56540826549
 		self.z_position = -0.0298790967155
 		
-- online_net1.h5	does NOT work		after learning, robot can drive up to ?? m/s
+- online_net1.h5	WORKS		after learning, robot can drive up to 15 m/s
 	'''---------------------Hyperparameters------------------------'''
 		# hyperparameters to experiment with
 		# number of learning episodes
-		self.max_episodes = 250
+		self.max_episodes = 1000
 		self.max_steps_per_episode = 750
 		# speed of the robot's wheels
-		self.speed = 5.0
+		self.speed = 9.0
 		# replay buffer capacity
-		self.rb_capacity = 2000
+		self.rb_capacity = 10000
 		# number of examples that will be extracted at once from
 		# the memory
-		self.batch_size = 300
+		self.batch_size = 100
 		# number of memory samples that will be processed together in
 		# one execution of the neural network
-		self.mini_batch_size = 4
+		self.mini_batch_size = 1
 		# variables for Bellman equation
 		self.gamma = 0.95
 		self.alpha = 0.95
 		# update rate for target network
-		self.update_r_targets = 10
+		self.update_r_targets = 5
 		# integer variable after how many episodes exploiting is possible
 		self.start_decaying = (self.max_episodes / 5)
 		# self.start_decaying = 0
@@ -58,3 +58,7 @@ Network models
 		self.x_position = 0.5132014349
 		self.y_position = 4.56540826549
 		self.z_position = -0.0298790967155
+		# sharp left curve
+		self.x_position = 0.930205421421
+		self.y_position = -5.77364575559
+		self.z_position = -0.0301045554742

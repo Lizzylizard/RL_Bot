@@ -11,6 +11,10 @@ import numpy as np
 import cv2 as cv
 from cv_bridge import CvBridge, CvBridgeError
 
+# Matplotlib
+from matplotlib import pyplot as plt
+from matplotlib.colors import hsv_to_rgb
+
 # ROS
 import rospy
 import rospkg
@@ -30,6 +34,8 @@ class MyImage:
   def __init__(self):
     # Initialize the CvBridge class
     self.bridge = CvBridge()
+    self.countA = 0
+    self.countB = 0
 
   # Try to convert the ROS Image message to a cv Image
   # returns already segmented image (black and white)
@@ -40,16 +46,29 @@ class MyImage:
       rospy.logerr("CvBridge Error: {0}".format(e))
 
     #print("Shape of received image = " + str(np.shape(cv_image)))
-    small_img = self.crop(cv_image)
+    #small_img = self.crop(cv_image)
     #print("Shape of cropped image = " + str(np.shape(small_img)))
     #print("")
     #print("Received img = ")
     #print(small_img)
-    seg_img = self.segmentation(small_img)
+    #seg_img = self.segmentation(small_img)
+    #seg_img = self.segmentation(cv_image)
     #print("Segmented img = ")
     #print(seg_img)
 
-    return seg_img
+    '''
+    path = "/home/elisabeth/catkin_ws/src/DeepNeuralNetwork" \
+           "/dqn_keras_3_1/images/A" + str(self.countA)
+    #plot image
+    plt.imshow(cv_image)
+    plt.title("Original")
+    #plt.show()
+    plt.savefig(path)
+    self.countA += 1
+    '''
+
+    #return seg_img
+    return cv_image
 
   # take middle row of image
   def crop(self, img):
@@ -95,7 +114,8 @@ class MyImage:
       k = 0
       j = img[i, k]
       # print("J = " + str(j))
-      while j < 251:  # as long as current pixel is black (is background)
+      while j > 50:  # as long as current pixel is black (is
+        # background)
         result += 1
         k += 1
         if (k < len(img[i])):  # check if it's still in bounds
@@ -161,5 +181,19 @@ class MyImage:
     else:
       # line is lost
       state = 7
+
+    '''
+    path = "/home/elisabeth/catkin_ws/src/DeepNeuralNetwork" \
+           "/dqn_keras_3_1/images/B" + str(self.countB)
+    #plot image
+    plt.imshow(img)
+    plt.title("Left = " + str(left) + "Right = " + str(right) +
+              "State = " + str(state))
+    # plt.show()
+    plt.savefig(path)
+    self.countB += 1
+    '''
+
+
 
     return state
