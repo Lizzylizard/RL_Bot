@@ -40,16 +40,17 @@ class MyImage:
       rospy.logerr("CvBridge Error: {0}".format(e))
 
     #print("Shape of received image = " + str(np.shape(cv_image)))
-    small_img = self.crop(cv_image)
+    #small_img = self.crop(cv_image)
     #print("Shape of cropped image = " + str(np.shape(small_img)))
     #print("")
     #print("Received img = ")
     #print(small_img)
-    seg_img = self.segmentation(small_img)
+    #seg_img = self.segmentation(cv_image)
     #print("Segmented img = ")
     #print(seg_img)
 
-    return seg_img
+    #return seg_img
+    return cv_image
 
   # take middle row of image
   def crop(self, img):
@@ -95,7 +96,8 @@ class MyImage:
       k = 0
       j = img[i, k]
       # print("J = " + str(j))
-      while j < 251:  # as long as current pixel is black (is background)
+      while j > 45:  # as long as current pixel is black (is
+        # background)
         result += 1
         k += 1
         if (k < len(img[i])):  # check if it's still in bounds

@@ -54,6 +54,7 @@ class Bot:
     self.img_helper = mi.MyImage()
 
   # returns the reward for a given state
+  '''
   def calculate_reward(self, curr_state):
     if (curr_state == 3):
       # best case: middle
@@ -79,6 +80,73 @@ class Bot:
     else:
       # worst case: line is lost
       reward = (-1000)
+
+    return reward
+  '''
+
+  # returns the reward for a taken action
+  def calculate_reward(self, last_state, last_action):
+    # return value
+    reward = 0
+
+    if (last_state == 3):
+      # best case: middle
+      if (last_action == 3):
+        # best action is to move forward
+        reward = 10
+      else:
+        reward = -100
+    elif (last_state == 2):
+      # second best case: slightly left
+      if (last_action == 2):
+        reward = 10
+      elif (last_action == 0 or last_action == 1):
+        reward = 0
+      else:
+        reward = -100
+    elif (last_state == 1):
+      # third best case: left
+      if (last_action == 1):
+        reward = 10
+      elif (last_action == 0 or last_action == 2):
+        reward = 0
+      else:
+        reward = -100
+    elif (last_state == 0):
+      # fourth best case: far left
+      if (last_action == 0):
+        reward = 10
+      elif (last_action == 1 or last_action == 2):
+        reward = 0
+      else:
+        reward = -100
+    elif (last_state == 4):
+      # second best case: slightly right
+      if (last_action == 4):
+        reward = 10
+      elif (last_action == 5 or last_action == 6):
+        reward = 0
+      else:
+        reward = -100
+    elif (last_state == 5):
+      # third best case: right
+      if (last_action == 5):
+        reward = 10
+      elif (last_action == 4 or last_action == 6):
+        reward = 0
+      else:
+        reward = -100
+    elif (last_state == 6):
+      # fourth best case: far right
+      if (last_action == 6):
+        reward = 10
+      elif (last_action == 4 or last_action == 5):
+        reward = 0
+      else:
+        reward = -100
+    else:
+      # worst case: line is lost
+      reward = (-500)
 
     return reward
 

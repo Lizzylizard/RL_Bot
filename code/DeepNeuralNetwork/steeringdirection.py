@@ -384,13 +384,15 @@ def count_pxl(img):
     for i in range(
       1):  # go from row 0 to 1 in steps of 1 (= the first row)
       k = 0
-      j = img[i, k, 0]
+      #j = img[i, k, 0]
+      j = img[i, k]
       print("J = " + str(j))
-      while j < 251:  # as long as current pixel is black (is background)
+      while j > 45:  # as long as current pixel is black (is background)
         result += 1
         k += 1
         if (k < len(img[i])):  # check if it's still in bounds
-          j = img[i, k, 0]  # jump to next pixel
+          #j = img[i, k, 0]  # jump to next pixel
+          j = img[i, k]  # jump to next pixel
         else:
           break
 
@@ -453,13 +455,49 @@ def get_state(img):
 
     return state
 
+def make_average_img(img_arr):
+    amount = len(img_arr)
+    new_img = img_arr[0]
+    for i in range(1, amount):
+        save = img_arr[i]
+        new_img = np.add(new_img, save)
+        
+    new_img = np.true_divide(new_img, amount)
+    return new_img
+    
+def slice_img(img):
+    #new_img = np.zeros(shape=[1, len(img[0])])
+    new_img = np.zeros(shape=[1, 50])
+    #for i in range(len(img[0])):
+    for i in range(50):
+        new_img[0, i] = img[0, i, 0]
+    return new_img
+
 if __name__=='__main__':   
     #open test image
     path = '/home/elisabeth/catkin_ws/src/Q-Learning/drive_three_pi/src/img/'
-    #img = cv.imread(path + 'lost1.jpg')        
-    #img = cv.imread(path + 'lost2.jpg')        
-    #img = cv.imread(path + 'lost3.jpg')        
-    img = cv.imread(path + 'lost4.jpg')        
+    img0 = cv.imread(path + 'lost1.jpg')
+    img0 = slice_img(img0)
+    img1 = np.array([[74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 46, 46, 10, 10, 10, 10, 10, 10, 10, 10, 46, 45, 44, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 22, 22, 0, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74]])
+    img2 = cv.imread(path + 'lost3.jpg')        
+    img2 = slice_img(img2)
+    img3 = np.array([[74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 10, 10, 10, 10, 10, 10, 10, 10, 46, 46, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74]])
+    img_arr = [img0, img1, img2, img3]
+    
+    imgs = np.empty(shape=[1, 200])
+    for i in range(len(imgs[0])):
+        if(i < 50):
+            imgs[0, i] = img0[0, i]
+        elif(i >= 50 and i < 100):
+            imgs[0, i] = img1[0, i-50]
+        elif(i >= 100 and i < 150):
+            imgs[0, i] = img2[0, i-100]
+        else:
+            imgs[0, i] = img3[0, i-150]            
+    print("imgs before = " + str(imgs))
+    
+    imgs = np.reshape(imgs, (4, 50))
+    new_img = make_average_img(imgs)
     
     #img = cv.imread('img/test.jpg')        #check
     #img = cv.imread('img/test1.jpg')       #check
@@ -484,12 +522,42 @@ if __name__=='__main__':
     # print("Image array = " + str(img))
     # print(type(img))
     
-    plt.imshow(img)    
+    plt.imshow(img0)
+    print("Image 1 = " + str(img0))
+    print("imgs[0] after = " + str(imgs[0]))
     plt.show()
     
+    plt.imshow(img1)
+    print("Image 2 = " + str(img1))
+    print("imgs[1] after = " + str(imgs[1]))
+    plt.show()
     
-    print("Dimensions = " + str(img.shape))
-    state = get_state(img)
+    plt.imshow(img2)
+    print("Image 3 = " + str(img2))
+    print("imgs[2] after = " + str(imgs[2]))
+    plt.show()
+        
+    plt.imshow(img3)
+    print("Image 4 = " + str(img3))
+    print("imgs[2] after = " + str(imgs[2]))
+    plt.show()
+    
+    plt.imshow(new_img)
+    print("New Image = " + str(new_img))
+    plt.show()
+    
+    # plt.imshow(img)    
+    # plt.show()
+    
+    
+    # print("Dimensions = " + str(img.shape))
+    state0 = get_state(img0)
+    state1 = get_state(img1)
+    state2 = get_state(img2)
+    state3 = get_state(img3)
+    average_state = (state0 + state1 + state2 + state3) / 4
+    state = get_state(new_img)
+    print("Average state = " + str(average_state))
     print("State = " + str(state))
     
     #crop image

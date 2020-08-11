@@ -3,7 +3,13 @@ Versionsverwaltung DQNs
 	dqn_keras_3_1:
 		- Endversion des Praktikums (wie dqn_keras_3, mit ein
 		paar kleinen Anpassungen von Hyperparametern)
+		- neue epsilon greedy berechnung (eigene)
+		- bilder werden nicht mehr segmentiert
+		bot.py wird nur noch für reward verwendet (status 
+		direkt über image.py)
+		- to do: neue statusberechnung (1 Bild aus mehreren 
+		machen)
 	dqn_keras_3_2:
+		- wie 3_1, aber:
 		- Als Input Stati statt Bilder
-		- exploration prob wird nicht verändert 
 		- loss ist unglaublich hoch

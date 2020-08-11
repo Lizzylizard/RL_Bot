@@ -36,13 +36,14 @@ class Network():
     # output layer
     size_out = 7
     output_layer = Dense(size_out, activation="linear",
-                         kernel_initializer='he_uniform')(C)
+                         kernel_initializer='he_uniform')(B)
     # define whole model
     self.model = Model(inputs=input_layer, outputs=output_layer,
                   name="Three Pi Model")
     # update weights of model
     self.model.compile(loss="mse", \
-                       optimizer=SGD(learning_rate=0.01), \
+                       #optimizer=SGD(learning_rate=0.01), \
+                       optimizer=SGD(learning_rate=0.001), \
                        metrics=["accuracy"])
 
     # self.model.summary()
