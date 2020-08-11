@@ -45,7 +45,7 @@ class Node:
     # increment if you wish to save a new version of the network model
     # or set to specific model version if you wish to use an existing
     # model
-    self.path_nr = 2
+    self.path_nr = 3
     # set to False if you wish to run program with existing model
     self.learn = True
 
@@ -63,7 +63,7 @@ class Node:
     self.batch_size = 100
     # number of memory samples that will be processed together in
     # one execution of the neural network
-    self.mini_batch_size = 1
+    self.mini_batch_size = 4
     # variables for Bellman equation
     self.gamma = 0.95
     self.alpha = 0.95
@@ -99,11 +99,12 @@ class Node:
     self.steps_in_episode = 0  # counts steps inside current episode
     # variables deciding whether to explore or to exploit
     # old --> these are currently used
-    # self.exploration_prob = 0.99
-    self.exploration_prob = 0.8
+    self.exploration_prob = 0.99
+    # self.exploration_prob = 0.8
     self.decay_rate = 0.01
     self.min_exploration_rate = 0.01
     self.max_exploration_rate = 1
+    self.decay_per_episode = self.calc_decay_per_episode()
     # new
     self.epsilon = 1
     self.epsilon_min = 0.001
@@ -381,18 +382,10 @@ class Node:
 
   # choose one of five given positions randomly
   def select_starting_pos(self):
-    # choose random number between 0 and 1
-    rand = random.uniform(0, 1)
-    if(rand < 0.5):
-      # sharp left curve
-      self.x_position = 0.930205421421
-      self.y_position = -5.77364575559
-      self.z_position = -0.0301045554742
-    else:
-      # sharp right curve
-      self.x_position = 1.1291257432
-      self.y_position = -3.37940826549
-      self.z_position = -0.0298815752691
+    # straight line from far left going into right curve
+    self.x_position = -2
+    self.y_position = 4.56540826549
+    self.z_position = -0.0298790967155
 
     '''
     # choose random number between 0 and 1
@@ -430,7 +423,7 @@ class Node:
       #print("case 4")
     else: 
       # straight line from far left going into right curve
-      self.x_position = 3
+      self.x_position = -2
       self.y_position = 4.56540826549
       self.z_position = -0.0298790967155
       '''
@@ -562,6 +555,8 @@ class Node:
 
   # stop robot, reset environment and increase episode counter
   def begin_new_episode(self):
+    # decay the probability of exploring
+    self.decay_epsilon()
     # stop robot
     self.stopRobot()
     # set robot back to starting position
@@ -598,12 +593,26 @@ class Node:
         self.epsilon *= self.epsilon_decay
     self.exploration_prob = self.epsilon
     '''
+    '''
     # deep lizard
     # old
     if(self.episode_counter > self.start_decaying):
       self.exploration_prob = self.min_exploration_rate + \
         (self.max_exploration_rate - self.min_exploration_rate) * \
         np.exp(-self.decay_rate * self.episode_counter)
+    '''
+    # own implementation
+    if(self.episode_counter > self.start_decaying):
+      self.exploration_prob -= self.decay_per_episode
+
+  # calculate the value that has to be subtracted from the
+  # exploration probability each episode
+  def calc_decay_per_episode(self):
+    total_decay_episodes = self.max_episodes - self.start_decaying
+    total_decay_steps = self.exploration_prob - self.min_exploration_rate
+    decay_per_episode = float(total_decay_steps) / \
+                        float(total_decay_episodes)
+    return decay_per_episode
 
   # decide whether to explore or to exploit
   def epsilon_greedy(self, e):
@@ -627,7 +636,9 @@ class Node:
     if (self.epsilon_greedy(self.exploration_prob)):
       print("Exploring")
       # take random action
-      action = np.random.randint(low=0, high=7)
+      action_arr = np.random.randint(low=0, high=7, size=10)
+      np.random.shuffle(action_arr)
+      action = action_arr[0]
       print("random action is = " + str(action))
       print("Action: " + self.action_strings.get(action))
       self.execute_action(action)
@@ -799,8 +810,7 @@ class Node:
             # learn a second time
             # self.replay_memory()
 
-            # decay the probability of exploring
-            # self.decay_epsilon()
+            # here decaying was before
 
             # end of iteration
             print("-" * 100)
