@@ -45,17 +45,17 @@ class Node:
     # increment if you wish to save a new version of the network model
     # or set to specific model version if you wish to use an existing
     # model
-    self.path_nr = 0
+    self.path_nr = 5
     # set to False if you wish to run program with existing model
     self.learn = True
 
     '''---------------------Hyperparameters------------------------'''
     # hyperparameters to experiment with
     # number of learning episodes
-    self.max_episodes = 1000
-    self.max_steps_per_episode = 750
+    self.max_episodes = 475
+    self.max_steps_per_episode = 400
     # speed of the robot's wheels
-    self.speed = 9.0
+    self.speed = 15.0
     # replay buffer capacity
     self.rb_capacity = 10000
     # number of examples that will be extracted at once from
@@ -71,7 +71,6 @@ class Node:
     self.update_r_targets = 5
     # integer variable after how many episodes exploiting is possible
     self.start_decaying = (self.max_episodes / 5)
-    # self.start_decaying = 0
 
     '''------------------------Class objects-----------------------'''
     # helper classes
@@ -188,6 +187,9 @@ class Node:
     # subscriber for topic '/camera/image_raw'
     self.sub = rospy.Subscriber('/camera/image_raw', Image,
                                 self.cam_im_raw_callback)
+
+    '''------------------------statistics--------------------------'''
+    self.step_array = np.zeros(shape=[self.max_episodes+1])
 
   '''-----------------------Image methods--------------------------'''
   # callback; copies the received image into a global numpy-array
@@ -555,6 +557,7 @@ class Node:
 
   # stop robot, reset environment and increase episode counter
   def begin_new_episode(self):
+    self.step_array[self.episode_counter] = self.steps_in_episode
     # decay the probability of exploring
     self.decay_epsilon()
     # stop robot
@@ -584,7 +587,7 @@ class Node:
     self.velocity_publisher.publish(vel)
 
   '''---------------Exploration exploitation trade off----------------'''
-  # exponentially decay epsilon
+  # (exponentially) decay epsilon
   def decay_epsilon(self):
     '''
     # new
@@ -669,6 +672,8 @@ class Node:
     # publish
     self.vel_msg = self.stop()
     self.velocity_publisher.publish(self.vel_msg)
+    # calculate average steps per episode
+    self.calc_average_steps()
     # save neural networks
     if(self.learn):
       self.save_model()
@@ -679,12 +684,12 @@ class Node:
   def drive(self):
     # if in first iteration after learning is finished
     if(self.first_time):
-      # make robot drive faster
-      # self.speed *= 1.5
       # make sound to signal that learning is finished
       sound.make_sound()
+      # calculate average steps per episode
+      self.calc_average_steps()
       # save neural network
-      self.save_model()
+      #self.save_model()
       # indicate end of first iteration after learning is finished
       self.first_time = False
 
@@ -712,6 +717,11 @@ class Node:
     # robot learned properly)
     if (self.curr_state == self.lost_line):
       self.reset_environment()
+
+  def calc_average_steps(self):
+    sum = np.sum(self.step_array)
+    average = float(sum) / float(self.max_episodes)
+    print("Average steps per episode = " + str(average))
 
   # use pre-existing trained network to drive
   def test(self):
@@ -816,6 +826,7 @@ class Node:
             # here decaying was before
 
             # end of iteration
+            print("Steps = " + str(self.steps_in_episode))
             print("-" * 100)
 
             # start a new loop at the current position
@@ -836,7 +847,9 @@ class Node:
         # count taken steps inside current episode
         self.steps_in_episode += 1
         if(self.steps_in_episode >= self.max_steps_per_episode):
-          print("Reached max. steps!")
+          if (self.learn and self.episode_counter >
+                 self.max_episodes):
+            print("Reached max. steps!")
 
     except rospy.ROSInterruptException:
       pass

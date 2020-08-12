@@ -3,6 +3,8 @@ Versionsverwaltung DQNs
 	dqn_keras_3_1:
 		- Endversion des Praktikums (wie dqn_keras_3, mit ein
 		paar kleinen Anpassungen von Hyperparametern)
+		- Reward wird anhand von letztem Status & letzter 
+			Aktion berechnet NICHT mit aktuellem Status!
 		- neue epsilon greedy berechnung (eigene)
 		- bilder werden nicht mehr segmentiert
 		bot.py wird nur noch für reward verwendet (status 
@@ -12,4 +14,9 @@ Versionsverwaltung DQNs
 	dqn_keras_3_2:
 		- wie 3_1, aber:
 		- Als Input Stati statt Bilder
-		- loss ist unglaublich hoch
+			- mini batch size = 1
+			- Netzwerk 1x Input Layer, 1x hidden Layer, 
+				1x Output
+		- learning rate = 0.001
+		- berechnung durchschnittliche steps pro episode
+		--> FUNKTIONIERT (5/5)!
