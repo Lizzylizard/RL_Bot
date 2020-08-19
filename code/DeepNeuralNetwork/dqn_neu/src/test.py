@@ -29,6 +29,10 @@ def shutdown():
 
 # main
 if __name__ == '__main__':
+  # robot instance
+  global robot
+  robot = main.Robot()
+
   # user input
   net = input("Network number: ")
   val = input("Number of episodes to test on: ")
@@ -41,8 +45,9 @@ if __name__ == '__main__':
     "/Training/Training_Network_" + str(net_number) + ".h5"
 
   # hyperparameters
-  image_length = 50
-  net_input_size = 1 * image_length
+  image_length = robot.image_length
+  nr_of_images = robot.images_in_one_input
+  net_input_size = nr_of_images * image_length
   #net_input_size = 1
   number_episodes = val
 
@@ -51,14 +56,22 @@ if __name__ == '__main__':
   training_network = training_network.load_model(training_net_path)
 
   # visualization
-  global robot
-  robot = main.Robot()
   robot.speed = speed
   robot.instantiate_node()
   robot.publish_action(7)
   rospy.on_shutdown(shutdown)
 
-  current_image, first_index = robot.get_image()
+  # one image
+  current_image, next_index = robot.get_image()
+  last_image = current_image.copy()
+
+  # multiple images
+  last_index = next_index
+  stack = robot.get_multiple_images(last_index, next_index)
+  mult_images = robot.get_correct_nr_of_images(stack)
+  last_mult_images = mult_images.copy()
+
+  # starting state
   state = robot.get_state(current_image)
   last_state = state
 
@@ -66,14 +79,21 @@ if __name__ == '__main__':
   try:
     i = 0
     while not rospy.is_shutdown():
+      # save last image(s)
+      last_image = current_image.copy()
+      last_mult_images = mult_images.copy()
       # get current image and its' index
-      current_image, first_index = robot.get_image()
+      last_index = next_index
+      current_image, next_index = robot.get_image()
+      # get all the images that were received during the last step
+      stack = robot.get_multiple_images(last_index, next_index)
+      mult_images = robot.get_correct_nr_of_images(stack)
 
       if(i <= number_episodes):
         # select action
         state = np.array([state])
         # action_values = training_network.predict(state)
-        action_values = training_network.predict(current_image)
+        action_values = training_network.predict(mult_images)
         action = np.argmax(action_values)
         # execute action
         robot.publish_action(action)

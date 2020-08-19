@@ -40,7 +40,7 @@ class Robot:
   def __init__(self):
     # saving variables
     self.image_path = "/home/elisabeth/catkin_ws/src/DeepNeuralNetwork/dqn_neu/images/Image"
-    self.net_number = 2
+    self.net_number = 3
     self.training_net_path = \
       "/home/elisabeth/catkin_ws/src/DeepNeuralNetwork/dqn_neu" \
       "/Training/Training_Network_" + str(self.net_number) + ".h5"
@@ -50,7 +50,7 @@ class Robot:
     # hyperparameters
     self.speed = 10.0
     self.epsilon = 1.0
-    self.max_episodes = 10
+    self.max_episodes = 1000
     self.max_steps_per_episode = 400
     self.memory_size = 10000
     self.batch_size = 100
@@ -588,11 +588,11 @@ if __name__ == '__main__':
       mult_images = robot.get_correct_nr_of_images(stack)
 
       # save images with title = state to check if correct
-      robot.save_image(last_mult_images, "Last images " + str(
-        robot.episode_counter), robot.image_cnt)
+      #robot.save_image(last_mult_images, "Last images " + str(
+        #robot.episode_counter), robot.image_cnt)
 
-      robot.save_image(mult_images, "Current images " + str(
-        robot.episode_counter), robot.image_cnt)
+      #robot.save_image(mult_images, "Current images " + str(
+        #robot.episode_counter), robot.image_cnt)
 
       if(robot.episode_counter < robot.max_episodes):
         # select action

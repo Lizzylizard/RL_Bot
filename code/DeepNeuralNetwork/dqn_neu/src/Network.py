@@ -44,7 +44,7 @@ class Network:
                        name="Three Pi Model")
     # update weights of model
     self.model.compile(loss="mse", \
-                       optimizer=SGD(learning_rate=0.0001), \
+                       optimizer=SGD(learning_rate=0.00001), \
                        metrics=["accuracy"])
 
     # print(self.model.get_weights())
