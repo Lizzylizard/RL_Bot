@@ -40,7 +40,7 @@ class Robot:
   def __init__(self):
     # saving variables
     self.image_path = "/home/elisabeth/catkin_ws/src/DeepNeuralNetwork/dqn_neu/images/Image"
-    self.net_number = 1
+    self.net_number = 2
     self.training_net_path = \
       "/home/elisabeth/catkin_ws/src/DeepNeuralNetwork/dqn_neu" \
       "/Training/Training_Network_" + str(self.net_number) + ".h5"
@@ -50,12 +50,12 @@ class Robot:
     # hyperparameters
     self.speed = 10.0
     self.epsilon = 1.0
-    self.max_episodes = 1000
+    self.max_episodes = 10
     self.max_steps_per_episode = 400
     self.memory_size = 10000
     self.batch_size = 100
     self.image_length = 50
-    self.images_in_one_input = 1
+    self.images_in_one_input = 2
     self.net_input_size = self.images_in_one_input * self.image_length
     # self.net_input_size = 1
     self.update_rate = 5
@@ -148,17 +148,21 @@ class Robot:
       print("Number of images = " + str(len(stack)))
     return stack
 
-  # get as many images as needed
+  # get as many images as needed (flattened)
   def get_correct_nr_of_images(self, stack):
     arr = np.zeros(shape=[self.images_in_one_input,
                           self.image_length])
     if (len(stack) >= self.images_in_one_input):
-      return (stack[0:self.images_in_one_input])
+      arr = stack[0:self.images_in_one_input]
     else:
       diff = self.images_in_one_input - len(stack)
       for i in range(diff):
         arr[i] = self.image_buffer[-1]
-      return arr
+    # shape correctly
+    arr = arr.flatten()
+    arr_2 = np.zeros(shape=[1, len(arr)])
+    arr_2[0] = arr
+    return arr_2
 
 
   # buffer received images to be able to get them later on
@@ -557,26 +561,47 @@ if __name__ == '__main__':
   robot.publish_action(7)
   rospy.on_shutdown(robot.shutdown)
 
-  current_image, first_index = robot.get_image()
-  last_image = current_image
-  last_index = first_index
+  # one image
+  current_image, next_index = robot.get_image()
+  last_image = current_image.copy()
+
+  # multiple images
+  last_index = next_index
+  stack = robot.get_multiple_images(last_index, next_index)
+  mult_images = robot.get_correct_nr_of_images(stack)
+  last_mult_images = mult_images.copy()
+
+  # starting state
   state = robot.get_state(current_image)
   last_state = state
 
   try:
     while not rospy.is_shutdown():
+      # save last image(s)
+      last_image = current_image.copy()
+      last_mult_images = mult_images.copy()
       # get current image and its' index
-      current_image, first_index = robot.get_image()
+      last_index = next_index
+      current_image, next_index = robot.get_image()
+      # get all the images that were received during the last step
+      stack = robot.get_multiple_images(last_index, next_index)
+      mult_images = robot.get_correct_nr_of_images(stack)
+
+      # save images with title = state to check if correct
+      robot.save_image(last_mult_images, "Last images " + str(
+        robot.episode_counter), robot.image_cnt)
+
+      robot.save_image(mult_images, "Current images " + str(
+        robot.episode_counter), robot.image_cnt)
 
       if(robot.episode_counter < robot.max_episodes):
         # select action
         action, rand = robot.epsilon_greedy(
-          last_image)
+          mult_images)
         # execute action
         robot.publish_action(action)
         # save last state
         last_state = state
-        last_image = current_image
         # get resulting state
         state = robot.get_state(current_image)
         # save image with title = state to check if correct
@@ -593,8 +618,8 @@ if __name__ == '__main__':
         else:
           robot.steps_in_episode += 1
         # store experience in memory
-        robot.memory.store_experience(resulting_state=current_image,
-          last_state=last_image, reward=reward, action=action,
+        robot.memory.store_experience(resulting_state=mult_images,
+          last_state=last_mult_images, reward=reward, action=action,
           done=done)
 
         # learn

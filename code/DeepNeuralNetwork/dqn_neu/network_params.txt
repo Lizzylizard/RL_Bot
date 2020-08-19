@@ -18,7 +18,7 @@ Network models
 		y = 4.56540826549
 		z = -0.0298790967155
 		
-- Training_Network_1.h5	 WORKS	after learning, robot can drive up to 27 m/s
+- Training_Network_1.h5	 WORKS	after learning, robot can drive up to 35 m/s
 	'''---------------------Hyperparameters------------------------'''
 		self.speed = 10.0
 		self.epsilon = 1.0
@@ -27,9 +27,9 @@ Network models
 		self.memory_size = 10000
 		self.batch_size = 100
 		self.image_length = 50
-		self.net_input_size = 1 * self.image_length
-		# self.net_input_size = 1
 		self.images_in_one_input = 1
+		self.net_input_size = self.images_in_one_input * self.image_length
+		# self.net_input_size = 1
 		self.update_rate = 5
 	'''--------------------Starting position-----------------------'''
 		# straight line from far left going into right curve
