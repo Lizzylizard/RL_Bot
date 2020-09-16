@@ -1,0 +1,18 @@
+Network models
+- Training_Network_0.h5	   works	after learning, robot can drive up to 12 m/s
+--> no epsilon decaying used
+--> images in a row now (stack)
+	'''---------------------Hyperparameters------------------------'''
+
+
+- Training_Network_1.h5	   ??	after learning, robot can drive up to ?? m/s
+--> 
+	'''---------------------Hyperparameters------------------------'''
+
+	'''--------------------Starting position-----------------------'''
+
+- Training_Network_2.h5	   ??	after learning, robot can drive up to ?? m/s
+--> 
+	'''---------------------Hyperparameters------------------------'''
+
+	'''--------------------Starting position-----------------------'''
